@@ -1,125 +1,21 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Bluetooth Electron App</title>
-    <style>
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        margin: 0;
-        padding: 20px;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      
-      .container {
-        background: white;
-        border-radius: 15px;
-        padding: 40px;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        text-align: center;
-        max-width: 500px;
-        width: 100%;
-      }
-      
-      h1 {
-        color: #333;
-        margin-bottom: 30px;
-        font-size: 2.5em;
-      }
-      
-      .bluetooth-button {
-        background: linear-gradient(45deg, #2196F3, #21CBF3);
-        color: white;
-        border: none;
-        padding: 15px 30px;
-        font-size: 18px;
-        border-radius: 50px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        margin: 20px 0;
-        box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
-      }
-      
-      .bluetooth-button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
-      }
-      
-      .bluetooth-button:disabled {
-        background: #ccc;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-      }
-      
-      .status {
-        margin: 20px 0;
-        padding: 15px;
-        border-radius: 10px;
-        font-weight: bold;
-      }
-      
-      .status.connected {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-      }
-      
-      .status.disconnected {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-      }
-      
-      .status.connecting {
-        background: #fff3cd;
-        color: #856404;
-        border: 1px solid #ffeaa7;
-      }
-      
-      .device-info {
-        background: #f8f9fa;
-        border-radius: 10px;
-        padding: 20px;
-        margin: 20px 0;
-        text-align: left;
-      }
-      
-      .device-info h3 {
-        margin-top: 0;
-        color: #333;
-      }
-      
-      .device-info p {
-        margin: 5px 0;
-        color: #666;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>🔵 Bluetooth Connect</h1>
-      
-      <button id="bluetoothBtn" class="bluetooth-button">
-        🔗 Connect to Bluetooth Device
-      </button>
-      
-      <div id="status" class="status disconnected">
-        Status: Disconnected
-      </div>
-      
-      <div id="deviceInfo" class="device-info" style="display: none;">
-        <h3>Connected Device:</h3>
-        <p><strong>Name:</strong> <span id="deviceName">-</span></p>
-        <p><strong>ID:</strong> <span id="deviceId">-</span></p>
-        <p><strong>Connected:</strong> <span id="connectionTime">-</span></p>
-      </div>
-    </div>
+<head>
+  <meta charset="UTF-8">
+  <title>Bluetooth Switch</title>
+</head>
+<body>
+  <h1>Bluetooth Controller</h1>
+  <button onclick="toggleBluetooth('on')">Turn On</button>
+  <button onclick="toggleBluetooth('off')">Turn Off</button>
+  <p id="status"></p>
 
-    <script src="renderer.js"></script>
-  </body>
-</html> 
+
+  <h2>Device List</h2>
+<button onclick="listDevices()">Show Devices</button>
+<pre id="devices"></pre>
+
+
+  <script src="renderer.js"></script>
+</body>
+</html>

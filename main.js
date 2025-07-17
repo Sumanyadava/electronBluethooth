@@ -1,45 +1,59 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
+const { exec } = require('child_process');
+const path = require('path');
 
-function createWindow () {
+function createWindow() {
   const win = new BrowserWindow({
-    width: 900,
-    height: 700,
+    width: 400,
+    height: 300,
     webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      enableRemoteModule: false,
-      webSecurity: true,
-      // Enable Bluetooth permissions
-      permissions: ['bluetooth']
-    }
-  });
-
-  // Set permissions for Bluetooth
-  win.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
-    const bluetoothPermissions = ['bluetooth', 'bluetooth-adapter'];
-    if (bluetoothPermissions.includes(permission)) {
-      callback(true); // Allow Bluetooth permissions
-    } else {
-      callback(false); // Deny other permissions
-    }
+      nodeIntegration: true,
+      contextIsolation: false,
+    },
   });
 
   win.loadFile('index.html');
-  
-  // Open DevTools in development (optional)
-  // win.webContents.openDevTools();
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  ipcMain.on('toggle-bluetooth', (event, status) => {
+    const command = status === 'on' ? 'bluetoothctl power on' : 'bluetoothctl power off';
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        event.reply('bluetooth-status', `Error: ${stderr}`);
+      } else {
+        event.reply('bluetooth-status', `Bluetooth turned ${status}`);
+      }
+    });
+  });
+
+
+
+
+
+
+  ipcMain.on('list-bluetooth-devices', (event) => {
+  exec('bluetoothctl devices', (error, stdout, stderr) => {
+    if (error) {
+      event.reply('bluetooth-devices-list', `Error: ${stderr}`);
+    } else {
+      event.reply('bluetooth-devices-list', stdout);
+    }
+  });
 });
 
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
-}); 
+ipcMain.on('connect-device', (event, macAddress) => {
+  const command = `bluetoothctl connect ${macAddress}`;
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      event.reply('device-connection-status', `Failed to connect: ${stderr}`);
+    } else {
+      event.reply('device-connection-status', `Connected to ${macAddress}`);
+    }
+  });
+});
+
+
+});
